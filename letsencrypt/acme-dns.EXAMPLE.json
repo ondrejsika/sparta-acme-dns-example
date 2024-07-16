@@ -1,0 +1,9 @@
+{
+  "sparta-acme-dns-example.sikademo.com": {
+    "fulldomain": "d160cf10-bf21-42c3-a406-e6bf7ee0ecbc.auth.acme-dns.io",
+    "subdomain": "d160cf10-bf21-42c3-a406-e6bf7ee0ecbc",
+    "username": "b824ed2e-564f-4320-a999-c0e0f012e71f",
+    "password": "xxx",
+    "server_url": "https://auth.acme-dns.io/"
+  }
+}

@@ -1,0 +1,38 @@
+services:
+  server:
+    image: nginx
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.https-app.rule=Host(`sparta-acme-dns-example.sikademo.com`)"
+      - "traefik.http.routers.https-app.entrypoints=https"
+      - "traefik.http.routers.https-app.tls.certresolver=le"
+      - "traefik.http.services.https-app.loadbalancer.server.port=80"
+  traefik:
+    image: traefik:3.1
+    command:
+      - --metrics.prometheus=true
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=traefik
+      - --entrypoints.http.address=:80
+      - --entrypoints.http.http.redirections.entryPoint.to=https
+      - --entrypoints.http.http.redirections.entryPoint.scheme=https
+      - --entrypoints.https.address=:443
+      - --certificatesresolvers.le.acme.dnschallenge.provider=acme-dns
+      - --certificatesresolvers.le.acme.email=le@sikademo.com
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/traefik-acme-storage.json
+      - --certificatesresolvers.le.acme.dnsChallenge.resolvers=1.1.1.1:53
+    userns_mode: host
+    restart: always
+    environment:
+      ACME_DNS_API_BASE: https://auth.acme-dns.io/
+      ACME_DNS_STORAGE_PATH: /letsencrypt/acme-dns.json
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./letsencrypt:/letsencrypt
+volumes:
+  letsencrypt:
