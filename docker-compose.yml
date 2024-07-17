@@ -4,17 +4,13 @@ services:
     labels:
       - traefik.enable=true
       - "traefik.http.routers.https-app.rule=Host(`sparta-acme-dns-example.sikademo.com`)"
-      - "traefik.http.routers.https-app.entrypoints=https"
       - "traefik.http.routers.https-app.tls.certresolver=le"
       - "traefik.http.services.https-app.loadbalancer.server.port=80"
   traefik:
     image: traefik:3.1
     command:
-      - --metrics.prometheus=true
-      - --api.insecure=true
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
-      - --providers.docker.network=traefik
       - --entrypoints.http.address=:80
       - --entrypoints.http.http.redirections.entryPoint.to=https
       - --entrypoints.http.http.redirections.entryPoint.scheme=https
@@ -34,5 +30,3 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./letsencrypt:/letsencrypt
-volumes:
-  letsencrypt:
